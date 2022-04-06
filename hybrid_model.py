@@ -52,7 +52,7 @@ trainloader,valloader = prep_dataloaders(X_train,y_train,X_val,y_val,batchsize)
 
 class NNHybridFiltering(nn.Module):
 
-    def __init__(self, n_users, n_items, n_genres, embdim_users, embdim_items, embdim_genres, n_activations,
+    def __init__(self, n_users, n_items, n_genres, embdim_users, embdim_items, embdim_sentiments, n_activations,
                  rating_range):
         super().__init__()
         self.user_embeddings = nn.Embedding(num_embeddings=n_users, embedding_dim=embdim_users)
@@ -145,7 +145,7 @@ model = NNHybridFiltering(n_users,
                        n_genres,
                        embdim_users=50,
                        embdim_items=50,
-                       embdim_genres=25,
+                       embdim_sentiments=25,
                        n_activations = 100,
                        rating_range=[0.,5.])
 criterion = nn.MSELoss()
