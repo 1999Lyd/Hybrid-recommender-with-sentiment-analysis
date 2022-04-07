@@ -135,24 +135,24 @@ def train_model(model, criterion, optimizer, dataloaders, device, num_epochs=5, 
 
     return costpaths
 
+if __name__ == __main__:
+    dataloaders = {'train':trainloader, 'val':valloader}
+    n_users = X.loc[:,'UserId'].max()+1
+    n_items = X.loc[:,'ProductId'].max()+1
+    n_sentiments = X.loc[:,'sentiment'].max()+1
+    model = NNHybridFiltering(n_users,
+                              n_items,
+                              n_sentiments,
+                              embdim_users=50,
+                              embdim_items=50,
+                              embdim_sentiments=25,
+                              n_activations = 100,
+                              rating_range=[0.,5.])
+    criterion = nn.MSELoss()
+    lr=0.001
+    n_epochs=10
+    wd=1e-3
+    optimizer = optim.Adam(model.parameters(), lr=lr, weight_decay=wd)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-dataloaders = {'train':trainloader, 'val':valloader}
-n_users = X.loc[:,'UserId'].max()+1
-n_items = X.loc[:,'ProductId'].max()+1
-n_sentiments = X.loc[:,'sentiment'].max()+1
-model = NNHybridFiltering(n_users,
-                       n_items,
-                       n_genres,
-                       embdim_users=50,
-                       embdim_items=50,
-                       embdim_sentiments=25,
-                       n_activations = 100,
-                       rating_range=[0.,5.])
-criterion = nn.MSELoss()
-lr=0.001
-n_epochs=10
-wd=1e-3
-optimizer = optim.Adam(model.parameters(), lr=lr, weight_decay=wd)
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-cost_paths = train_model(model,criterion,optimizer,dataloaders, device,n_epochs, scheduler=None)
+    cost_paths = train_model(model,criterion,optimizer,dataloaders, device,n_epochs, scheduler=None)
