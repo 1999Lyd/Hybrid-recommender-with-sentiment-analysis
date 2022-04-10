@@ -35,7 +35,7 @@ Using the box folder located [here](https://duke.app.box.com/folder/160083268030
 - ```./models/user_encoder.pickle```
 - ```./models/tfidf_reg.pickle```
 - ```./models/tfidf.pickle```
-- - ```./data/processed/app_data_test.csv```
+- ```./data/processed/app_data_test.csv```
 
 Once the models are in the right directories, to run the app, use the following command to run the app:
 
