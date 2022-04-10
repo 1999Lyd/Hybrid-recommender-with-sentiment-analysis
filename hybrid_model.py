@@ -52,13 +52,14 @@ trainloader,valloader = prep_dataloaders(X_train,y_train,X_val,y_val,batchsize)
 
 class NNHybridFiltering(nn.Module):
 
-    def __init__(self, n_users, n_items, n_genres, embdim_users, embdim_items, embdim_sentiments, n_activations,
+    def __init__(self, n_users, n_items, n_sentiments, embdim_users, embdim_items, embdim_u_sentiments, embdim_u_sentiments, n_activations,
                  rating_range):
         super().__init__()
         self.user_embeddings = nn.Embedding(num_embeddings=n_users, embedding_dim=embdim_users)
         self.item_embeddings = nn.Embedding(num_embeddings=n_items, embedding_dim=embdim_items)
-        self.genre_embeddings = nn.Embedding(num_embeddings=n_genres, embedding_dim=embdim_genres)
-        self.fc1 = nn.Linear(embdim_users + embdim_items + embdim_genres, n_activations)
+        self.u_sentiment_embeddings = nn.Embedding(num_embeddings=n_sentiments, embedding_dim=embdim_u_sentiments)
+        self.i_sentiment_embeddings = nn.Embedding(num_embeddings=n_sentiments, embedding_dim=embdim_i_sentiments)
+        self.fc1 = nn.Linear(embdim_users + embdim_items + 2*embdim_sentiments, n_activations)
         self.fc2 = nn.Linear(n_activations, 1)
         self.rating_range = rating_range
 
@@ -66,9 +67,10 @@ class NNHybridFiltering(nn.Module):
         # Get embeddings for minibatch
         embedded_users = self.user_embeddings(X[:, 0])
         embedded_items = self.item_embeddings(X[:, 1])
-        embedded_genres = self.genre_embeddings(X[:, 2])
+        embedded_u_sentiments = self.u_sentiment_embeddings(X[:, 2])
+        embedded_i_sentiments = self.i_sentiment_embeddings(X[:, 3])
         # Concatenate user, item and genre embeddings
-        embeddings = torch.cat([embedded_users, embedded_items, embedded_genres], dim=1)
+        embeddings = torch.cat([embedded_users, embedded_items, embedded_u_sentiments, embedded_i_sentiments], dim=1)
         # Pass embeddings through network
         preds = self.fc1(embeddings)
         preds = F.relu(preds)
@@ -145,7 +147,8 @@ if __name__ == __main__:
                               n_sentiments,
                               embdim_users=50,
                               embdim_items=50,
-                              embdim_sentiments=25,
+                              embdim_u_sentiments=25,
+                              embdim_i_sentiments=25,
                               n_activations = 100,
                               rating_range=[0.,5.])
     criterion = nn.MSELoss()
@@ -156,3 +159,4 @@ if __name__ == __main__:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     cost_paths = train_model(model,criterion,optimizer,dataloaders, device,n_epochs, scheduler=None)
+    torch.save(model,'models/fullmodel.pt')
