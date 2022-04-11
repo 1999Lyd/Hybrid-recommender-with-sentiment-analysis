@@ -21,7 +21,10 @@ The model training process utilizes the flowchart below:
 ![Hybrid recommender with reviews (1)](https://user-images.githubusercontent.com/31523376/162636595-9e60e2bc-afd4-4ce7-a66d-bf79f4de43ad.jpg)
 
 
-- Download the [dataset](https://duke.app.box.com/folder/160083268030?s=6ayc5muwnntphn89hq3bx3tgf273jjso) to the same directory of hybrid_model.py
+- Download the raw [dataset](https://www.kaggle.com/datasets/snap/amazon-fine-food-reviews) to Data folder
+- Use command `python data_preprocess.py --code_path {path to Code folder}` to do the data preprocessing, and the `train.csv` and `test.csv` will be shown in Data folder
+- Use command `python tfidf.py --code_path {path ot Code folder}` or `python sent_transformer.py --code_path {path ot Code folder}` to get the sentiment prediction from tfidf or sentence transformer. `tfidf_train_bins.csv` or other files will be shown in the Data directory
+- Move the files from the above step to the same directory of hybrid_model.py
 - ```python hybrid_model.py``` see the cost path and get the trained model
 
 ## Demo
